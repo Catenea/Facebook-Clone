@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:test/data/data.dart';
 import 'package:test/pages/pages.dart';
 import 'package:test/widgets/widgets.dart';
 
@@ -33,6 +34,8 @@ class _NavScreenState extends State<NavScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
+
     return DefaultTabController(
       length: _icons.length,
       child: Scaffold(
@@ -40,13 +43,24 @@ class _NavScreenState extends State<NavScreen> {
           index: _selectedIndex,
           children: _screens,
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.only(bottom: 12.0),
-          child: CustomTabBar(
-              icons: _icons,
-              selectedIndex: _selectedIndex,
-              onTap: (index) => setState(() => _selectedIndex = index)),
-        ),
+        appBar: Responsive.isDesktop(context)
+            ? PreferredSize(
+                child: CustomAppBar(
+                    currentUser: currentUser,
+                    icons: _icons,
+                    selectedIndex: _selectedIndex,
+                    onTap: (index) => setState(() => _selectedIndex = index)),
+                preferredSize: Size(screenSize.width, 100.0))
+            : null,
+        bottomNavigationBar: !Responsive.isDesktop(context)
+            ? Padding(
+                padding: const EdgeInsets.only(bottom: 12.0),
+                child: CustomTabBar(
+                    icons: _icons,
+                    selectedIndex: _selectedIndex,
+                    onTap: (index) => setState(() => _selectedIndex = index)),
+              )
+            : SizedBox.shrink(),
       ),
     );
   }
